@@ -13,7 +13,7 @@
 using namespace cv;
 using namespace std;
 
-//TODO: create thresholds that allow for red and blue
+#define B BigbufDetector
 
 //experimentally found values
 int min_red = 35, max_red = 200;
@@ -28,8 +28,9 @@ int curr_contour_idx = 0;
 
 bool isSpoke(vector<Point> &contour);
 bool isTarget(vector<Point> &contour);
+void predictionUnitTest();
 
-
+//real main
 int main(){
     int framesRead = 0;
     Mat frame;
@@ -49,25 +50,133 @@ int main(){
 
     //initializing bigbuff detector with test variables
     OtherParam otherParam; //I did not make this struct just go with it
-    otherParam.color = BLUE;
+    otherParam.color = RED;
     otherParam.id = 0;
     otherParam.level = 0;
     otherParam.mode = BIGBUFF;
     serial_port serialPort;
     BigbufDetector bigbufDetector = BigbufDetector(serialPort, true);
 
-    while (1) {
+    bool doUnitTest = false;
+
+    if(doUnitTest){
+        predictionUnitTest();
+    }
+    else{
+        while (1) {
+            cap.read(frame);
+            if (frame.empty()) {
+                cout << "Could not read frame " << framesRead;
+                return -2;
+            }
+
+            bigbufDetector.feed_im(frame, otherParam);
+            framesRead++;
+            //comment this line out to use space to step through the video frames
+//        waitKey(0);
+        }
+    }
+}
+
+/**
+ * modified version of main made for testing the predicted values to the actual values
+ */
+void predictionUnitTest(){
+
+    //set to true if you want to see gui
+    bool showFrames = true;
+    double secondsInFutureToPredict = .5;
+
+    int framesRead = 0;
+    Mat frame;
+
+    VideoCapture cap;
+    //test file
+    const char *filePath = "/home/andrew/Desktop/capture1.mp4";
+
+    cap.open(filePath);
+    if (!cap.isOpened()) {
+        cout << "Could not open video file.";
+        return;
+    }
+    else{
+        cout << "Video file opened.";
+    }
+
+    int totalFrames = cap.get(CAP_PROP_FRAME_COUNT);
+
+    Point predictions[totalFrames];
+    Point actual[totalFrames];
+    bool fails[totalFrames];
+
+    double framesPerSecond = cap.get(CAP_PROP_FPS);
+
+    //number of frames between current location, and the frames where it is predicted at
+    int offset = (int) (framesPerSecond * secondsInFutureToPredict);
+
+    serial_port serialPort;
+    BigbufDetector bigbufDetector = BigbufDetector(serialPort, showFrames);
+
+    int failCount = 0;
+
+    double totalError = 0;
+    for (int i = 0; i < totalFrames; i++) {
+
         cap.read(frame);
         if (frame.empty()) {
             cout << "Could not read frame " << framesRead;
-            return -2;
+            return;
         }
 
-        bigbufDetector.feed_im(frame, otherParam);
-        framesRead++;
-//        waitKey(0);
+        B::TargetAndCenter targetAndCenter = bigbufDetector.getTargetAndCenterPoints(frame, RED);
+
+        if(!targetAndCenter.failed){
+            actual[i] = targetAndCenter.targetCenter;
+
+            std::cout << "time since epoch" << bigbufDetector.timeSinceEpoch() << endl;
+
+            Point futureEstimate = bigbufDetector.predictFutureTargetLocation(targetAndCenter, secondsInFutureToPredict, bigbufDetector.timeSinceEpoch());
+            predictions[i] = futureEstimate;
+            fails[i] = false;
+        }
+        else{
+            failCount ++;
+            fails[i] = true;
+        }
+
+        if(i > offset){
+            //if ther are no errors at indices
+            if(!fails[i] && !fails[i - offset]){
+                double error =  norm(actual[i] - predictions[i - offset]);
+                totalError += error;
+
+                printf("prediction error: %lf pixels \n", error);
+
+                //future prediction
+                circle(frame, predictions[i - offset], 10, Scalar(0,255,0), -1);
+                //current value
+                circle(frame, actual[i], 10, Scalar(0,0,255), -1);
+                //prediction for this frame
+                circle(frame, predictions[i], 10, Scalar(255,255,0), -1);
+
+                if(showFrames){
+                    imshow("frame", frame);
+                    waitKey(1);
+                }
+            }
+            else{
+                imshow("frame", frame);
+//                waitKey(0);
+            }
+
+        }
+
+//        usleep(33000);
     }
+    printf("total average error: %lf \n", totalError / (totalFrames - offset - failCount));
+    printf("failcount: %d, totalFrames: %d", failCount, totalFrames);
 }
+
 
 
 int asdf() {

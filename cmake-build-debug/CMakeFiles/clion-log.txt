@@ -1,4 +1,4 @@
-/snap/clion/151/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/andrew/Desktop/CVB-Bigbuff
+/snap/clion/151/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/andrew/Desktop/BigBuffCode
 -- The C compiler identification is GNU 7.5.0
 -- The CXX compiler identification is GNU 7.5.0
 -- Detecting C compiler ABI info
@@ -14,4 +14,4 @@
 -- Found OpenCV: /usr/local (found version "4.5.1") 
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug
+-- Build files have been written to: /home/andrew/Desktop/BigBuffCode/cmake-build-debug

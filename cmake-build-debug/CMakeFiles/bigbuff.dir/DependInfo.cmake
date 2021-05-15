@@ -4,10 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/andrew/Desktop/CVB-Bigbuff/BigbufDetector.cpp" "/home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug/CMakeFiles/bigbuff.dir/BigbufDetector.cpp.o"
-  "/home/andrew/Desktop/CVB-Bigbuff/DataCollector.cpp" "/home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug/CMakeFiles/bigbuff.dir/DataCollector.cpp.o"
-  "/home/andrew/Desktop/CVB-Bigbuff/TargetDetector.cpp" "/home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug/CMakeFiles/bigbuff.dir/TargetDetector.cpp.o"
-  "/home/andrew/Desktop/CVB-Bigbuff/main.cpp" "/home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug/CMakeFiles/bigbuff.dir/main.cpp.o"
+  "/home/andrew/Desktop/BigBuffCode/BigbufDetector.cpp" "/home/andrew/Desktop/BigBuffCode/cmake-build-debug/CMakeFiles/bigbuff.dir/BigbufDetector.cpp.o"
+  "/home/andrew/Desktop/BigBuffCode/main.cpp" "/home/andrew/Desktop/BigBuffCode/cmake-build-debug/CMakeFiles/bigbuff.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

@@ -62,10 +62,10 @@ RM = /snap/clion/151/bin/cmake/linux/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/andrew/Desktop/CVB-Bigbuff
+CMAKE_SOURCE_DIR = /home/andrew/Desktop/BigBuffCode
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug
+CMAKE_BINARY_DIR = /home/andrew/Desktop/BigBuffCode/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/bigbuff.dir/depend.make
@@ -78,70 +78,40 @@ include CMakeFiles/bigbuff.dir/flags.make
 
 CMakeFiles/bigbuff.dir/main.cpp.o: CMakeFiles/bigbuff.dir/flags.make
 CMakeFiles/bigbuff.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/bigbuff.dir/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/bigbuff.dir/main.cpp.o -c /home/andrew/Desktop/CVB-Bigbuff/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrew/Desktop/BigBuffCode/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/bigbuff.dir/main.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/bigbuff.dir/main.cpp.o -c /home/andrew/Desktop/BigBuffCode/main.cpp
 
 CMakeFiles/bigbuff.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/bigbuff.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrew/Desktop/CVB-Bigbuff/main.cpp > CMakeFiles/bigbuff.dir/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrew/Desktop/BigBuffCode/main.cpp > CMakeFiles/bigbuff.dir/main.cpp.i
 
 CMakeFiles/bigbuff.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/bigbuff.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrew/Desktop/CVB-Bigbuff/main.cpp -o CMakeFiles/bigbuff.dir/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrew/Desktop/BigBuffCode/main.cpp -o CMakeFiles/bigbuff.dir/main.cpp.s
 
 CMakeFiles/bigbuff.dir/BigbufDetector.cpp.o: CMakeFiles/bigbuff.dir/flags.make
 CMakeFiles/bigbuff.dir/BigbufDetector.cpp.o: ../BigbufDetector.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/bigbuff.dir/BigbufDetector.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/bigbuff.dir/BigbufDetector.cpp.o -c /home/andrew/Desktop/CVB-Bigbuff/BigbufDetector.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrew/Desktop/BigBuffCode/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/bigbuff.dir/BigbufDetector.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/bigbuff.dir/BigbufDetector.cpp.o -c /home/andrew/Desktop/BigBuffCode/BigbufDetector.cpp
 
 CMakeFiles/bigbuff.dir/BigbufDetector.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/bigbuff.dir/BigbufDetector.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrew/Desktop/CVB-Bigbuff/BigbufDetector.cpp > CMakeFiles/bigbuff.dir/BigbufDetector.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrew/Desktop/BigBuffCode/BigbufDetector.cpp > CMakeFiles/bigbuff.dir/BigbufDetector.cpp.i
 
 CMakeFiles/bigbuff.dir/BigbufDetector.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/bigbuff.dir/BigbufDetector.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrew/Desktop/CVB-Bigbuff/BigbufDetector.cpp -o CMakeFiles/bigbuff.dir/BigbufDetector.cpp.s
-
-CMakeFiles/bigbuff.dir/TargetDetector.cpp.o: CMakeFiles/bigbuff.dir/flags.make
-CMakeFiles/bigbuff.dir/TargetDetector.cpp.o: ../TargetDetector.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/bigbuff.dir/TargetDetector.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/bigbuff.dir/TargetDetector.cpp.o -c /home/andrew/Desktop/CVB-Bigbuff/TargetDetector.cpp
-
-CMakeFiles/bigbuff.dir/TargetDetector.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/bigbuff.dir/TargetDetector.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrew/Desktop/CVB-Bigbuff/TargetDetector.cpp > CMakeFiles/bigbuff.dir/TargetDetector.cpp.i
-
-CMakeFiles/bigbuff.dir/TargetDetector.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/bigbuff.dir/TargetDetector.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrew/Desktop/CVB-Bigbuff/TargetDetector.cpp -o CMakeFiles/bigbuff.dir/TargetDetector.cpp.s
-
-CMakeFiles/bigbuff.dir/DataCollector.cpp.o: CMakeFiles/bigbuff.dir/flags.make
-CMakeFiles/bigbuff.dir/DataCollector.cpp.o: ../DataCollector.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/bigbuff.dir/DataCollector.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/bigbuff.dir/DataCollector.cpp.o -c /home/andrew/Desktop/CVB-Bigbuff/DataCollector.cpp
-
-CMakeFiles/bigbuff.dir/DataCollector.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/bigbuff.dir/DataCollector.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrew/Desktop/CVB-Bigbuff/DataCollector.cpp > CMakeFiles/bigbuff.dir/DataCollector.cpp.i
-
-CMakeFiles/bigbuff.dir/DataCollector.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/bigbuff.dir/DataCollector.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrew/Desktop/CVB-Bigbuff/DataCollector.cpp -o CMakeFiles/bigbuff.dir/DataCollector.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrew/Desktop/BigBuffCode/BigbufDetector.cpp -o CMakeFiles/bigbuff.dir/BigbufDetector.cpp.s
 
 # Object files for target bigbuff
 bigbuff_OBJECTS = \
 "CMakeFiles/bigbuff.dir/main.cpp.o" \
-"CMakeFiles/bigbuff.dir/BigbufDetector.cpp.o" \
-"CMakeFiles/bigbuff.dir/TargetDetector.cpp.o" \
-"CMakeFiles/bigbuff.dir/DataCollector.cpp.o"
+"CMakeFiles/bigbuff.dir/BigbufDetector.cpp.o"
 
 # External object files for target bigbuff
 bigbuff_EXTERNAL_OBJECTS =
 
 bigbuff: CMakeFiles/bigbuff.dir/main.cpp.o
 bigbuff: CMakeFiles/bigbuff.dir/BigbufDetector.cpp.o
-bigbuff: CMakeFiles/bigbuff.dir/TargetDetector.cpp.o
-bigbuff: CMakeFiles/bigbuff.dir/DataCollector.cpp.o
 bigbuff: CMakeFiles/bigbuff.dir/build.make
 bigbuff: /usr/local/lib/libopencv_gapi.so.4.5.1
 bigbuff: /usr/local/lib/libopencv_stitching.so.4.5.1
@@ -196,7 +166,7 @@ bigbuff: /usr/local/lib/libopencv_photo.so.4.5.1
 bigbuff: /usr/local/lib/libopencv_imgproc.so.4.5.1
 bigbuff: /usr/local/lib/libopencv_core.so.4.5.1
 bigbuff: CMakeFiles/bigbuff.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable bigbuff"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/andrew/Desktop/BigBuffCode/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable bigbuff"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/bigbuff.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -209,6 +179,6 @@ CMakeFiles/bigbuff.dir/clean:
 .PHONY : CMakeFiles/bigbuff.dir/clean
 
 CMakeFiles/bigbuff.dir/depend:
-	cd /home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/andrew/Desktop/CVB-Bigbuff /home/andrew/Desktop/CVB-Bigbuff /home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug /home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug /home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug/CMakeFiles/bigbuff.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/andrew/Desktop/BigBuffCode/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/andrew/Desktop/BigBuffCode /home/andrew/Desktop/BigBuffCode /home/andrew/Desktop/BigBuffCode/cmake-build-debug /home/andrew/Desktop/BigBuffCode/cmake-build-debug /home/andrew/Desktop/BigBuffCode/cmake-build-debug/CMakeFiles/bigbuff.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/bigbuff.dir/depend
 

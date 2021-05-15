@@ -67,10 +67,10 @@ RM = /snap/clion/151/bin/cmake/linux/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/andrew/Desktop/CVB-Bigbuff
+CMAKE_SOURCE_DIR = /home/andrew/Desktop/BigBuffCode
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug
+CMAKE_BINARY_DIR = /home/andrew/Desktop/BigBuffCode/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -99,9 +99,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug/CMakeFiles /home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrew/Desktop/BigBuffCode/cmake-build-debug/CMakeFiles /home/andrew/Desktop/BigBuffCode/cmake-build-debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrew/Desktop/CVB-Bigbuff/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrew/Desktop/BigBuffCode/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -169,60 +169,6 @@ BigbufDetector.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bigbuff.dir/build.make CMakeFiles/bigbuff.dir/BigbufDetector.cpp.s
 .PHONY : BigbufDetector.cpp.s
 
-DataCollector.o: DataCollector.cpp.o
-
-.PHONY : DataCollector.o
-
-# target to build an object file
-DataCollector.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bigbuff.dir/build.make CMakeFiles/bigbuff.dir/DataCollector.cpp.o
-.PHONY : DataCollector.cpp.o
-
-DataCollector.i: DataCollector.cpp.i
-
-.PHONY : DataCollector.i
-
-# target to preprocess a source file
-DataCollector.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bigbuff.dir/build.make CMakeFiles/bigbuff.dir/DataCollector.cpp.i
-.PHONY : DataCollector.cpp.i
-
-DataCollector.s: DataCollector.cpp.s
-
-.PHONY : DataCollector.s
-
-# target to generate assembly for a file
-DataCollector.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bigbuff.dir/build.make CMakeFiles/bigbuff.dir/DataCollector.cpp.s
-.PHONY : DataCollector.cpp.s
-
-TargetDetector.o: TargetDetector.cpp.o
-
-.PHONY : TargetDetector.o
-
-# target to build an object file
-TargetDetector.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bigbuff.dir/build.make CMakeFiles/bigbuff.dir/TargetDetector.cpp.o
-.PHONY : TargetDetector.cpp.o
-
-TargetDetector.i: TargetDetector.cpp.i
-
-.PHONY : TargetDetector.i
-
-# target to preprocess a source file
-TargetDetector.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bigbuff.dir/build.make CMakeFiles/bigbuff.dir/TargetDetector.cpp.i
-.PHONY : TargetDetector.cpp.i
-
-TargetDetector.s: TargetDetector.cpp.s
-
-.PHONY : TargetDetector.s
-
-# target to generate assembly for a file
-TargetDetector.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bigbuff.dir/build.make CMakeFiles/bigbuff.dir/TargetDetector.cpp.s
-.PHONY : TargetDetector.cpp.s
-
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -262,12 +208,6 @@ help:
 	@echo "... BigbufDetector.o"
 	@echo "... BigbufDetector.i"
 	@echo "... BigbufDetector.s"
-	@echo "... DataCollector.o"
-	@echo "... DataCollector.i"
-	@echo "... DataCollector.s"
-	@echo "... TargetDetector.o"
-	@echo "... TargetDetector.i"
-	@echo "... TargetDetector.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
