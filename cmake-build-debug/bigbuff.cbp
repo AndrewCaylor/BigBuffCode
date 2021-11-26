@@ -92,6 +92,15 @@
 		<Unit filename="/home/andrew/Desktop/BigBuffCode/BigbufDetector.h">
 			<Option target="bigbuff"/>
 		</Unit>
+		<Unit filename="/home/andrew/Desktop/BigBuffCode/Predictor.cpp">
+			<Option target="bigbuff"/>
+		</Unit>
+		<Unit filename="/home/andrew/Desktop/BigBuffCode/Predictor.h">
+			<Option target="bigbuff"/>
+		</Unit>
+		<Unit filename="/home/andrew/Desktop/BigBuffCode/etc.h">
+			<Option target="bigbuff"/>
+		</Unit>
 		<Unit filename="/home/andrew/Desktop/BigBuffCode/main.cpp">
 			<Option target="bigbuff"/>
 		</Unit>

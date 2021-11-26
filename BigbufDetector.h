@@ -1,16 +1,12 @@
-#include "opencv2/opencv.hpp"
 
-using namespace cv;
-using namespace std;
+#ifndef BIGBUFF_BIGBUFDETECTOR_H
+#define BIGBUFF_BIGBUFDETECTOR_H
 
 //These file locations will change when integrated with rest of project
 #include "util/common.h" //RobotBase/vision
 #include "util/message.h" //robogrinder SDK
 #include "util/serial_port.h"
-
-#ifndef BIGBUFF_BIGBUFDETECTOR_H
-#define BIGBUFF_BIGBUFDETECTOR_H
-
+#include "Predictor.h"
 
 /**
  * This class is for finding the targets of the big buff and predicting target location into the future.
@@ -24,36 +20,23 @@ public:
     //meant to be used publicly
     void feed_im(cv::Mat frame, OtherParam otherParam);
 
-    //This struct is used for returning target and center info from functions
-    struct TargetAndCenter{
-        vector<Point> targetRect;
-        Point targetCenter;
-        Point buffCenter;
-        bool failed;
-    };
-    struct PitchAndYaw{
-        int pitch;
-        int yaw;
-    };
-
-    //for testing
-    Point predictFutureTargetLocation(BigbufDetector::TargetAndCenter, double t, double currentTimeS);
     double timeSinceEpoch();
 
-    BigbufDetector::TargetAndCenter getTargetAndCenterPoints(cv::Mat frame, _color color);
+    TargetAndCenter getTargetAndCenterPoints(cv::Mat frame, _color color);
 
 private:
     serial_port serialPort;
 
+    Predictor * predictor;
+
     void outputToSerial(int pitch, int yaw);
 
-    BigbufDetector::PitchAndYaw getPitchYaw(vector<Point> points);
-    double PI = 3.14159265;
+    PitchAndYaw getPitchYaw(vector<Point> points);
 
     //if true, will print out messages to the console, and not use the serial port
     bool debug = false;
 
-    //increments every cycle of feed_im, used for keeping time when debugging
+    //increments every cycle of predictFutureTargetLocation, used for timekeeping, especially when debugging
     int callCount = 0;
 
 /*
@@ -110,13 +93,6 @@ private:
     cv::Mat distCoeffs = (cv::Mat_<double>(1, 5)
             << -0.2126367859619807, 0.2282910064864265, 0.0020583387355406, 0.0006136511397638, -0.7559987171745171);
 
-/*
- * vars for predicting where the target is going to go
-*/
-
-    double angVelocityAvg = 0;
-    double lastSpokeAngle = 0;
-    double timeOfLastPredictCall = 0;
 };
 
 #endif //BIGBUFF_BIGBUFDETECTOR_H

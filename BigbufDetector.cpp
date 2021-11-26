@@ -6,6 +6,8 @@
 B::BigbufDetector(serial_port serialPortIN, bool debug) : serialPort(serialPortIN) {
     this->debug = debug;
 
+    this->predictor = new Predictor(debug);
+
     /// solvepnp Data
     x = -width / 2;
     y = height / 2;
@@ -33,7 +35,7 @@ B::BigbufDetector(serial_port serialPortIN, bool debug) : serialPort(serialPortI
 void B::feed_im(cv::Mat frame, OtherParam otherParam){
     double secondsInFutureToPredict = .5;
 
-    B::TargetAndCenter targetAndCenter = this->getTargetAndCenterPoints(frame, (_color) otherParam.color);
+    TargetAndCenter targetAndCenter = this->getTargetAndCenterPoints(frame, (_color) otherParam.color);
 
     //if getTargetAndCenterPoints has a problem it will return an empty vector
     if(!targetAndCenter.failed){
@@ -51,7 +53,7 @@ void B::feed_im(cv::Mat frame, OtherParam otherParam){
             now  = timeSinceEpoch();
         }
 
-        Point futureTargetCenterEstimate = this->predictFutureTargetLocation(targetAndCenter, secondsInFutureToPredict, now);
+        Point futureTargetCenterEstimate = this->predictor->predict(targetAndCenter, secondsInFutureToPredict, now);
 
         Point targetCenterDiff = futureTargetCenterEstimate - currentTargetCenter;
 
@@ -59,7 +61,7 @@ void B::feed_im(cv::Mat frame, OtherParam otherParam){
         for (int i = 0; i < 4; i++) futureTargetPoints.emplace_back(
                     targetPoints[i] + targetCenterDiff);
 
-        B::PitchAndYaw pitchYaw = getPitchYaw(futureTargetPoints);
+        PitchAndYaw pitchYaw = getPitchYaw(futureTargetPoints);
 
         if(debug){
             std::cout << "pitch    " << pitchYaw.pitch << "yaw:      " << pitchYaw.yaw << endl;
@@ -78,8 +80,6 @@ void B::feed_im(cv::Mat frame, OtherParam otherParam){
             outputToSerial( pitchYaw.pitch, pitchYaw.yaw);
         }
     }
-
-    this->callCount++;
 }
 
 /**
@@ -110,7 +110,7 @@ void B::outputToSerial(int pitch, int yaw){
  * @param points
  * @return a vector containing the pitch and yaw
  */
-B::PitchAndYaw B::getPitchYaw(vector<Point> points){
+PitchAndYaw B::getPitchYaw(vector<Point> points){
 
     vector<Point2f> points2f;
     cv::Mat(points).copyTo(points2f);
@@ -184,10 +184,10 @@ bool B::isTarget(vector<Point> &contour) {
  * @param frame
  * @return [TARGET RECT POINTS , CENTER POINT]
  */
-B::TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color){
+TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color){
 
     //The targetAndCenter struct to return
-    B::TargetAndCenter toReturn;
+    TargetAndCenter toReturn;
 
     vector<Point> spoke;
     int spoke_num = -1;
@@ -455,52 +455,6 @@ Point BigbufDetector::getCenter(vector<Point> &contour){
     return total / 4;
 }
 
-/**
- * Predicts where the target will be t seconds into the future.
- * This function assumes it will be called 30 times a second
- *
- * @param points = [current target point, current center point]
- * @param t time in future to predict
- * @return Point where the target will be in t seconds
- */
-Point BigbufDetector::predictFutureTargetLocation(B::TargetAndCenter points, double t, double currentTime) {
-    double radius = norm(points.targetCenter - points.buffCenter);
-    Point relativeTarget = points.targetCenter - points.buffCenter;
-
-    //current angle of the spoke of interest
-    double currAngle = atan2(relativeTarget.y, relativeTarget.x);
-
-    //there will be no time change if the callCount = 0 and will create a nan
-    if(this->callCount > 0){
-        double angleChange = currAngle - lastSpokeAngle;
-
-        //phi diff is close to 2pi when it rolls over. might be other values so i added a while loop
-        while(angleChange > 1)
-            angleChange -= PI;
-
-        double timeChange = currentTime - timeOfLastPredictCall;
-        double currAngularVelocity =  - (angleChange / timeChange);
-
-        //creates moving average where recent values are prioritized
-        angVelocityAvg = (0.975) * angVelocityAvg + (0.025) * currAngularVelocity;
-    }
-
-    //angle to predict into the future in radians
-    double futureAngle = angVelocityAvg * t;
-
-    //this delta_phi is used for how far we want to look into the future
-    double angleToTravel = currAngle - futureAngle;
-
-    if(debug) printf("average delta phi: %f \n", angVelocityAvg);
-
-    lastSpokeAngle = currAngle;
-    timeOfLastPredictCall = currentTime;
-
-    Point target;
-    target.x = radius * cos(angleToTravel) + points.buffCenter.x;
-    target.y = radius * sin(angleToTravel) + points.buffCenter.y;
-    return target;
-}
 
 /**
  * @return number of milliseconds since 1970 / 1000

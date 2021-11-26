@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/bigbuff.dir/BigbufDetector.cpp.o"
+  "CMakeFiles/bigbuff.dir/Predictor.cpp.o"
   "CMakeFiles/bigbuff.dir/main.cpp.o"
   "bigbuff"
   "bigbuff.pdb"

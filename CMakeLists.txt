@@ -6,6 +6,6 @@ set(CMAKE_CXX_STANDARD 14)
 find_package(OpenCV)
 include_directories(${OpenCV_INCLUDE_DIRS})
 #
-add_executable(bigbuff main.cpp BigbufDetector.cpp BigbufDetector.h)
+add_executable(bigbuff main.cpp BigbufDetector.cpp BigbufDetector.h Predictor.cpp Predictor.h etc.h)
 target_link_libraries(bigbuff ${OpenCV_LIBS})
 target_link_libraries(bigbuff ${Boost_LIBRARIES})
