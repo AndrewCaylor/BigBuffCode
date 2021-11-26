@@ -1,5 +1,5 @@
-# README
+# BigBuff Detection and Prediction Code
 
-Be sure to change the opencv path in the make file (line 7)  
-find_package(OpenCV 4.3 REQUIRED PATHS *"/home/andrew/build/"*)
- 
+
+High level documentation is at: https://docs.google.com/drawings/d/1k0ZPCevA134gQANGShyUjOQ8JnmBmaPDGiKB0Q4C4-U/edit?usp=sharing   
+*Must use VT email to access*

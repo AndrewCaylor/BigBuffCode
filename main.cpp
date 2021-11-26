@@ -29,7 +29,6 @@ int main(){
         predictionUnitTest();
     }
     else{
-
         int framesRead = 0;
         Mat frame;
 
@@ -79,8 +78,9 @@ void predictionUnitTest(){
     Mat frame;
 
     VideoCapture cap;
-    //test file
-    const char *filePath = "/home/andrew/Desktop/capture1.mp4";
+
+    // path to test video file (Yes, you need the ../ )
+    const char *filePath = "../capture1.mp4";
 
     cap.open(filePath);
     if (!cap.isOpened()) {
