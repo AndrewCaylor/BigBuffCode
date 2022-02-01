@@ -146,7 +146,7 @@ void predictionUnitTest(){
                 circle(frame, predictions[i - offset], 10, Scalar(0,255,0), -1);
                 //prediction generated on this frame (grey)
                 circle(frame, predictions[i], 10, Scalar(100,100,100), -1);
-
+                
                 if(showFrames){
                     imshow("frame", frame);
                     waitKey(1);

@@ -136,27 +136,41 @@ PitchAndYaw B::getPitchYaw(vector<Point> points){
  * Target detection functions
  */
 
+/// TODO: use https://docs.opencv.org/4.x/d5/d45/tutorial_py_contours_more_functions.html
+
 //1: find the rectangleiness of the contour
 //2: maybe allow for detection of rectangles if they are at an angle
 //3: use side ratios to help find the rectangles that are the right dimensions
 bool B::isSpoke(vector<Point> &contour) {
     //check that the area is in a certain range
-    RotatedRect rect = minAreaRect(contour);
-    float width = rect.size.width;
-    float height = rect.size.height;
-    float side_ratio = 0;
-    if (width / height < 1) {
-        side_ratio = width / height;
-    }
-    else {
-        side_ratio = height / width;
-    }
 
-    float cont_ratio = contourArea(contour) / (width * height);
-    return (side_ratio > ((double) min_spoke_side_ratio / 1000)) &&
-           (side_ratio < ((double) max_spoke_side_ratio / 1000)) &&
-           (cont_ratio > ((double) min_spoke_area_ratio / 1000)) &&
-           (cont_ratio < ((double) max_spoke_area_ratio / 1000));
+    double d2 = matchShapes(contour, this->spokePoints, CONTOURS_MATCH_I2, 0);
+
+    // RotatedRect rect = minAreaRect(contour);
+    // float width = rect.size.width;
+    // float height = rect.size.height;
+    // float side_ratio = 0;
+    // if (width / height < 1) {
+    //     side_ratio = width / height;
+    // }
+    // else {
+    //     side_ratio = height / width;
+    // }
+
+    // float cont_ratio = contourArea(contour) / (width * height);
+    // bool oldOutput= (side_ratio > ((double) min_spoke_side_ratio / 1000)) &&
+    //        (side_ratio < ((double) max_spoke_side_ratio / 1000)) &&
+    //        (cont_ratio > ((double) min_spoke_area_ratio / 1000)) &&
+    //        (cont_ratio < ((double) max_spoke_area_ratio / 1000));
+    
+    bool newOutput = d2 < .7;
+
+    // if(oldOutput!=newOutput){
+    //     std::cout << "ERROR" << std::endl;
+    // }
+
+
+           return newOutput;
 }
 
 bool B::isTarget(vector<Point> &contour) {

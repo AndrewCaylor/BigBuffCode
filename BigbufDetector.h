@@ -24,6 +24,10 @@ public:
 
     TargetAndCenter getTargetAndCenterPoints(cv::Mat frame, _color color);
 
+
+     std::vector<cv::Point> spokePoints = {Point(0,15), 
+    Point(0,25),Point(70,25), Point(70,40), Point(100,40), Point(100,0), Point(70,0), Point(70,15), Point(0,15)};
+
 private:
     serial_port serialPort;
 
