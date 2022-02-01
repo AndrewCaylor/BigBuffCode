@@ -3,7 +3,8 @@
 
 #define B BigbufDetector
 
-B::BigbufDetector(serial_port serialPortIN, bool debug) : serialPort(serialPortIN) {
+B::BigbufDetector(serial_port serialPortIN, bool debug) : serialPort(serialPortIN)
+{
     this->debug = debug;
 
     this->predictor = new Predictor(debug);
@@ -32,25 +33,29 @@ B::BigbufDetector(serial_port serialPortIN, bool debug) : serialPort(serialPortI
  * @param frame
  * @param otherParam
  */
-void B::feed_im(cv::Mat frame, OtherParam otherParam){
+void B::feed_im(cv::Mat frame, OtherParam otherParam)
+{
     double secondsInFutureToPredict = .5;
 
-    TargetAndCenter targetAndCenter = this->getTargetAndCenterPoints(frame, (_color) otherParam.color);
+    TargetAndCenter targetAndCenter = this->getTargetAndCenterPoints(frame, (_color)otherParam.color);
 
     //if getTargetAndCenterPoints has a problem it will return an empty vector
-    if(!targetAndCenter.failed){
+    if (!targetAndCenter.failed)
+    {
         //creating temp variables for the struct variables
         vector<Point> targetPoints = targetAndCenter.targetRect;
         Point currentTargetCenter = targetAndCenter.targetCenter;
         Point buffCenter = targetAndCenter.buffCenter;
 
         double now;
-        if(debug){
+        if (debug)
+        {
             //simulate 30 fps when debugging
             now = callCount * .033;
         }
-        else{
-            now  = timeSinceEpoch();
+        else
+        {
+            now = timeSinceEpoch();
         }
 
         Point futureTargetCenterEstimate = this->predictor->predict(targetAndCenter, secondsInFutureToPredict, now);
@@ -58,26 +63,30 @@ void B::feed_im(cv::Mat frame, OtherParam otherParam){
         Point targetCenterDiff = futureTargetCenterEstimate - currentTargetCenter;
 
         vector<Point> futureTargetPoints;
-        for (int i = 0; i < 4; i++) futureTargetPoints.emplace_back(
-                    targetPoints[i] + targetCenterDiff);
+        for (int i = 0; i < 4; i++)
+            futureTargetPoints.emplace_back(
+                targetPoints[i] + targetCenterDiff);
 
         PitchAndYaw pitchYaw = getPitchYaw(futureTargetPoints);
 
-        if(debug){
+        if (debug)
+        {
             std::cout << "pitch    " << pitchYaw.pitch << "yaw:      " << pitchYaw.yaw << endl;
 
-            circle(frame, currentTargetCenter, 10, Scalar(0,0,255), -1);
-            circle(frame, futureTargetCenterEstimate, 10, Scalar(0,255,255), -1);
+            circle(frame, currentTargetCenter, 10, Scalar(0, 0, 255), -1);
+            circle(frame, futureTargetCenterEstimate, 10, Scalar(0, 255, 255), -1);
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++)
+            {
                 line(frame, futureTargetPoints[i], futureTargetPoints[(i + 1) % 4], Scalar(0, 255, 255), 3);
             }
 
             this->display(frame, frame);
             waitKey(1);
         }
-        else {
-            outputToSerial( pitchYaw.pitch, pitchYaw.yaw);
+        else
+        {
+            outputToSerial(pitchYaw.pitch, pitchYaw.yaw);
         }
     }
 }
@@ -88,7 +97,8 @@ void B::feed_im(cv::Mat frame, OtherParam otherParam){
  * @param pitch
  * @param yaw
  */
-void B::outputToSerial(int pitch, int yaw){
+void B::outputToSerial(int pitch, int yaw)
+{
     struct serial_gimbal_data data;
     data.size = 8;
     data.rawData[0] = data.head;
@@ -110,7 +120,8 @@ void B::outputToSerial(int pitch, int yaw){
  * @param points
  * @return a vector containing the pitch and yaw
  */
-PitchAndYaw B::getPitchYaw(vector<Point> points){
+PitchAndYaw B::getPitchYaw(vector<Point> points)
+{
 
     vector<Point2f> points2f;
     cv::Mat(points).copyTo(points2f);
@@ -122,8 +133,8 @@ PitchAndYaw B::getPitchYaw(vector<Point> points){
 
     cv::Point3f target_3d;
     target_3d = cv::Point3f(tvec);
-    int pitch = int((atan2(target_3d.y - 80, target_3d.z) + (float) (OFFSET_PITCH * CV_PI / 1800)) * 0.6 * 10000);
-    int yaw = int((-atan2(target_3d.x, target_3d.z) + (float) (OFFSET_PITCH * CV_PI / 1800)) * 0.6 * 10000);
+    int pitch = int((atan2(target_3d.y - 80, target_3d.z) + (float)(OFFSET_PITCH * CV_PI / 1800)) * 0.6 * 10000);
+    int yaw = int((-atan2(target_3d.x, target_3d.z) + (float)(OFFSET_PITCH * CV_PI / 1800)) * 0.6 * 10000);
 
     PitchAndYaw out;
     out.pitch = pitch;
@@ -141,40 +152,16 @@ PitchAndYaw B::getPitchYaw(vector<Point> points){
 //1: find the rectangleiness of the contour
 //2: maybe allow for detection of rectangles if they are at an angle
 //3: use side ratios to help find the rectangles that are the right dimensions
-bool B::isSpoke(vector<Point> &contour) {
-    //check that the area is in a certain range
+bool B::isSpoke(vector<Point> &contour)
+{
+#define useNew true
+#if useNew
 
-    double d2 = matchShapes(contour, this->spokePoints, CONTOURS_MATCH_I2, 0);
+    // matches the contour with a previously found contour
+    double shapeDiff = matchShapes(contour, this->spokePoints, CONTOURS_MATCH_I1, 0);
+    return shapeDiff < .4;
 
-    // RotatedRect rect = minAreaRect(contour);
-    // float width = rect.size.width;
-    // float height = rect.size.height;
-    // float side_ratio = 0;
-    // if (width / height < 1) {
-    //     side_ratio = width / height;
-    // }
-    // else {
-    //     side_ratio = height / width;
-    // }
-
-    // float cont_ratio = contourArea(contour) / (width * height);
-    // bool oldOutput= (side_ratio > ((double) min_spoke_side_ratio / 1000)) &&
-    //        (side_ratio < ((double) max_spoke_side_ratio / 1000)) &&
-    //        (cont_ratio > ((double) min_spoke_area_ratio / 1000)) &&
-    //        (cont_ratio < ((double) max_spoke_area_ratio / 1000));
-    
-    bool newOutput = d2 < .7;
-
-    // if(oldOutput!=newOutput){
-    //     std::cout << "ERROR" << std::endl;
-    // }
-
-
-           return newOutput;
-}
-
-bool B::isTarget(vector<Point> &contour) {
-    //check that the area is in a certain range
+#else
 
     RotatedRect rect = minAreaRect(contour);
     float width = rect.size.width;
@@ -186,11 +173,38 @@ bool B::isTarget(vector<Point> &contour) {
     else {
         side_ratio = height / width;
     }
+
     float cont_ratio = contourArea(contour) / (width * height);
-    return (side_ratio > ((double) min_target_side_ratio / 1000)) &&
-           (side_ratio < ((double) max_target_side_ratio / 1000)) &&
-           (cont_ratio > ((double) min_target_area_ratio / 1000)) &&
-           (cont_ratio < ((double) max_target_area_ratio / 1000));
+    return (side_ratio > ((double) min_spoke_side_ratio / 1000)) &&
+           (side_ratio < ((double) max_spoke_side_ratio / 1000)) &&
+           (cont_ratio > ((double) min_spoke_area_ratio / 1000)) &&
+           (cont_ratio < ((double) max_spoke_area_ratio / 1000));
+
+
+#endif
+}
+
+bool B::isTarget(vector<Point> &contour)
+{
+    //check that the area is in a certain range
+
+    RotatedRect rect = minAreaRect(contour);
+    float width = rect.size.width;
+    float height = rect.size.height;
+    float side_ratio = 0;
+    if (width / height < 1)
+    {
+        side_ratio = width / height;
+    }
+    else
+    {
+        side_ratio = height / width;
+    }
+    float cont_ratio = contourArea(contour) / (width * height);
+    return (side_ratio > ((double)min_target_side_ratio / 1000)) &&
+           (side_ratio < ((double)max_target_side_ratio / 1000)) &&
+           (cont_ratio > ((double)min_target_area_ratio / 1000)) &&
+           (cont_ratio < ((double)max_target_area_ratio / 1000));
 }
 
 /**
@@ -198,7 +212,8 @@ bool B::isTarget(vector<Point> &contour) {
  * @param frame
  * @return [TARGET RECT POINTS , CENTER POINT]
  */
-TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color){
+TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color)
+{
 
     //The targetAndCenter struct to return
     TargetAndCenter toReturn;
@@ -214,21 +229,23 @@ TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color){
     Mat mask;
 
     //thresholds the frame based on BigBuff color
-    if(color == BLUE){
+    if (color == BLUE)
+    {
         inRange(frame,
                 Scalar(Blue_minBlue, Blue_minGreen, Blue_minRed),
-                Scalar(Blue_maxBlue,Blue_maxGreen,Blue_maxRed),
+                Scalar(Blue_maxBlue, Blue_maxGreen, Blue_maxRed),
                 mask);
     }
-    else if(color == RED){
+    else if (color == RED)
+    {
         inRange(frame,
                 Scalar(Red_minBlue, Red_minGreen, Red_minRed),
-                Scalar(Red_maxBlue,Red_maxGreen,Red_maxRed),
+                Scalar(Red_maxBlue, Red_maxGreen, Red_maxRed),
                 mask);
     }
 
     //used for passing into the dilate and erode methods
-    Mat element  = getStructuringElement(MORPH_RECT, Size(element_size, element_size), Point(-1, -1));
+    Mat element = getStructuringElement(MORPH_RECT, Size(element_size, element_size), Point(-1, -1));
 
     //expands pixels
     dilate(mask, mask, element);
@@ -243,10 +260,12 @@ TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color){
 
     /// FINDING SPOKE
     //looping through the contours to find the spoke contour
-    for (int i = 0; i < contours.size(); i++) {
+    for (int i = 0; i < contours.size(); i++)
+    {
         vector<Point> curr_contour = contours[i];
         //target will be a child of the spoke
-        if (hierarchy[i][2] >= 0 && isSpoke(curr_contour)) {
+        if (hierarchy[i][2] >= 0 && isSpoke(curr_contour))
+        {
             spoke = curr_contour;
             spoke_num = i;
             break;
@@ -254,9 +273,11 @@ TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color){
     }
 
     //if there is no spoke return nothing
-    if (spoke_num == -1) {
+    if (spoke_num == -1)
+    {
         // Display target's min_rect center
-        if(debug){
+        if (debug)
+        {
             this->display(mask, frame);
             printf("No spoke found");
         }
@@ -269,34 +290,24 @@ TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color){
     //loop through the children of the spoke
     //hierarchy[i][0] is the next child of the contour
     //hierarchy[spoke_num][2] is the first child (greatest i)
-    for (int i = hierarchy[spoke_num][2]; i >= 0; i = hierarchy[i][0]) {
+    for (int i = hierarchy[spoke_num][2]; i >= 0; i = hierarchy[i][0])
+    {
         vector<Point> curr_contour = contours[i];
-        if (isTarget(curr_contour)) {
+        if (isTarget(curr_contour))
+        {
             target = curr_contour;
             target_num = i;
-
-//UNCOMMENT TO DISPLAY TARGET INFO FOR DEBUGGING
-//            RotatedRect rect = minAreaRect(curr_contour);
-//            float width = rect.size.width;
-//            float height = rect.size.height;
-//            float side_ratio = 0;
-//            if (width / height < 1) {
-//                side_ratio = width / height;
-//            }
-//            else {
-//                side_ratio = height / width;
-//            }
-//            float cont_ratio = contourArea(curr_contour) / (width * height);
-//            printf("side ratio: %lf, contour ratio: %lf\n", side_ratio, cont_ratio);
 
             break;
         }
     }
 
     //ensure that we actually found a target
-    if (target_num == -1) {
+    if (target_num == -1)
+    {
         // Display target's min_rect center
-        if(debug){
+        if (debug)
+        {
             this->display(mask, frame);
             printf("No target found\n");
         }
@@ -316,17 +327,18 @@ TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color){
     double deltaY = spoke_center.y - target_center.y;
 
     Point estimatedCenter = Point(
-        target_center.x + ((double) this->slopeCoeff / 1000) * deltaX,
-        target_center.y + ((double) this->slopeCoeff / 1000) * deltaY
-    );
+        target_center.x + ((double)this->slopeCoeff / 1000) * deltaX,
+        target_center.y + ((double)this->slopeCoeff / 1000) * deltaY);
 
     //looping through the contours to find the center countour
-    for (int i = 0; i < contours.size(); i++) {
+    for (int i = 0; i < contours.size(); i++)
+    {
         vector<Point> curr_contour = contours[i];
         //target will be a child of the spoke
         Point currCenter = getCenter(curr_contour);
 
-        if (norm(estimatedCenter - currCenter) < targetToSpokeDistance * ((double) this->distanceErrorCoeff/1000)) {
+        if (norm(estimatedCenter - currCenter) < targetToSpokeDistance * ((double)this->distanceErrorCoeff / 1000))
+        {
             center = curr_contour;
             center_num = i;
             break;
@@ -334,11 +346,13 @@ TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color){
     }
 
     //ensure that we actually found a center
-    if (center_num == -1) {
+    if (center_num == -1)
+    {
         // Display target's min_rect center
-        if(debug){
+        if (debug)
+        {
             printf("no center found\n");
-            circle(frame, estimatedCenter, 10, (0,0,255), -1);
+            circle(frame, estimatedCenter, 10, (0, 0, 255), -1);
             this->display(mask, frame);
         }
         toReturn.failed = true;
@@ -351,7 +365,8 @@ TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color){
     targetRect.points(targetPoints);
 
     // display rects for target, spoke and center
-    if(debug){
+    if (debug)
+    {
         //creating rectangles for displaying
 
         RotatedRect spoke_rect = minAreaRect(spoke_contour);
@@ -363,19 +378,20 @@ TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color){
         center_rect.points(center_pts);
 
         //draw the lines on the frame
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++)
+        {
             line(frame, targetPoints[i], targetPoints[(i + 1) % 4], Scalar(255, 0, 0), 3);
             line(frame, spoke_pts[i], spoke_pts[(i + 1) % 4], Scalar(0, 255, 0), 3);
             line(frame, center_pts[i], center_pts[(i + 1) % 4], Scalar(0, 0, 255), 3);
         }
-        circle(frame, estimatedCenter, ((int) (targetToSpokeDistance * ((double) this->distanceErrorCoeff/1000))), (0,0,255), 2);
-//        this->display(mask, frame);
+        circle(frame, estimatedCenter, ((int)(targetToSpokeDistance * ((double)this->distanceErrorCoeff / 1000))), (0, 0, 255), 2);
+        //        this->display(mask, frame);
     }
 
     //creating output struct
     Point buffCenter = getCenter(center_contour);
 
-    for(int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
         toReturn.targetRect.emplace_back(Point(targetPoints[i].x, targetPoints[i].y));
 
     toReturn.targetCenter = getCenter(toReturn.targetRect);
@@ -385,32 +401,32 @@ TargetAndCenter B::getTargetAndCenterPoints(Mat frame, _color color){
     return toReturn;
 }
 
-void BigbufDetector::display(Mat mask, const Mat& frame){
+void BigbufDetector::display(Mat mask, const Mat &frame)
+{
     cv::imshow("mask", mask);
     cv::imshow("frame", frame);
 
     // Making a window to modify fields
-    namedWindow("Fields",WINDOW_NORMAL);
-    createTrackbar("red_min","Fields",&Blue_minRed,255);
-    createTrackbar("red_max","Fields",&Blue_maxRed,255);
-    createTrackbar("blue_min","Fields",&Blue_minBlue,255);
-    createTrackbar("blue_max","Fields",&Blue_maxBlue,255);
-    createTrackbar("green_min","Fields",&Blue_minGreen,255);
-    createTrackbar("green_max","Fields",&Blue_maxGreen,255);
-//    createTrackbar("min_spoke_side_ratio","Fields",&min_spoke_side_ratio,1000);
-//    createTrackbar("max_spoke_side_ratio","Fields",&max_spoke_side_ratio,1000);
-//    createTrackbar("min_spoke_area_ratio","Fields",&min_spoke_area_ratio,1000);
-//    createTrackbar("max_spoke_area_ratio","Fields",&max_spoke_area_ratio,1000);
-//    createTrackbar("min_target_side_ratio","Fields",&min_target_side_ratio,1000);
-//    createTrackbar("max_target_side_ratio","Fields",&max_target_side_ratio,1000);
-//    createTrackbar("min_target_area_ratio","Fields",&min_target_area_ratio,1000);
-//    createTrackbar("max_target_area_ratio","Fields",&max_target_area_ratio,1000);
-//    createTrackbar("center_to_target_min","Fields",&center_to_target_min,1000);
-//    createTrackbar("center_to_target_max","Fields",&center_to_target_max,1000);
-//
-//    createTrackbar("slopeCoeff","Fields",&slopeCoeff,4000);
-//    createTrackbar("distanceErrorCoeff","Fields",&distanceErrorCoeff,4000);
-
+    namedWindow("Fields", WINDOW_NORMAL);
+    createTrackbar("red_min", "Fields", &Blue_minRed, 255);
+    createTrackbar("red_max", "Fields", &Blue_maxRed, 255);
+    createTrackbar("blue_min", "Fields", &Blue_minBlue, 255);
+    createTrackbar("blue_max", "Fields", &Blue_maxBlue, 255);
+    createTrackbar("green_min", "Fields", &Blue_minGreen, 255);
+    createTrackbar("green_max", "Fields", &Blue_maxGreen, 255);
+    //    createTrackbar("min_spoke_side_ratio","Fields",&min_spoke_side_ratio,1000);
+    //    createTrackbar("max_spoke_side_ratio","Fields",&max_spoke_side_ratio,1000);
+    //    createTrackbar("min_spoke_area_ratio","Fields",&min_spoke_area_ratio,1000);
+    //    createTrackbar("max_spoke_area_ratio","Fields",&max_spoke_area_ratio,1000);
+    //    createTrackbar("min_target_side_ratio","Fields",&min_target_side_ratio,1000);
+    //    createTrackbar("max_target_side_ratio","Fields",&max_target_side_ratio,1000);
+    //    createTrackbar("min_target_area_ratio","Fields",&min_target_area_ratio,1000);
+    //    createTrackbar("max_target_area_ratio","Fields",&max_target_area_ratio,1000);
+    //    createTrackbar("center_to_target_min","Fields",&center_to_target_min,1000);
+    //    createTrackbar("center_to_target_max","Fields",&center_to_target_max,1000);
+    //
+    //    createTrackbar("slopeCoeff","Fields",&slopeCoeff,4000);
+    //    createTrackbar("distanceErrorCoeff","Fields",&distanceErrorCoeff,4000);
 
     //createTrackbar("min_spoke_area","Fields",&min_spoke_area,2000);
     //createTrackbar("max_spoke_area","Fields",&max_spoke_area,2000);
@@ -422,14 +438,16 @@ void BigbufDetector::display(Mat mask, const Mat& frame){
     //createTrackbar("curr_contour_idx","Fields",&curr_contour_idx,50);
 
     vector<Mat> ch;
-    split(frame,ch);
-    Mat R_ch,G_ch,B_ch;
-    R_ch = ch[2]; G_ch = ch[1]; B_ch=ch[0];
-    threshold(R_ch, R_ch, Red_maxRed,255,THRESH_TRUNC);
+    split(frame, ch);
+    Mat R_ch, G_ch, B_ch;
+    R_ch = ch[2];
+    G_ch = ch[1];
+    B_ch = ch[0];
+    threshold(R_ch, R_ch, Red_maxRed, 255, THRESH_TRUNC);
     threshold(R_ch, R_ch, Red_minRed, 255, THRESH_TOZERO);
-    threshold(B_ch, B_ch, Red_maxBlue,255,THRESH_TRUNC);
+    threshold(B_ch, B_ch, Red_maxBlue, 255, THRESH_TRUNC);
     threshold(B_ch, B_ch, Red_minBlue, 255, THRESH_TOZERO);
-    threshold(G_ch, G_ch, Red_maxGreen,255,THRESH_TRUNC);
+    threshold(G_ch, G_ch, Red_maxGreen, 255, THRESH_TRUNC);
     threshold(G_ch, G_ch, Red_minGreen, 255, THRESH_TOZERO);
 
     resize(R_ch, R_ch, Size(500, 500));
@@ -437,8 +455,8 @@ void BigbufDetector::display(Mat mask, const Mat& frame){
     resize(G_ch, G_ch, Size(500, 500));
 
     //put to 500 so we can see the image and it doesnt take up the whole screen
-//    resize(mask, mask, Size(500, 500));
-//    resize(frame, frame, Size(500, 500));
+    //    resize(mask, mask, Size(500, 500));
+    //    resize(frame, frame, Size(500, 500));
 
     imshow("red", R_ch);
     imshow("blue", B_ch);
@@ -453,7 +471,8 @@ void BigbufDetector::display(Mat mask, const Mat& frame){
  * @param contour
  * @return
  */
-Point BigbufDetector::getCenter(vector<Point> &contour){
+Point BigbufDetector::getCenter(vector<Point> &contour)
+{
 
     RotatedRect rect = minAreaRect(contour);
 
@@ -462,18 +481,21 @@ Point BigbufDetector::getCenter(vector<Point> &contour){
 
     Point total = Point(0, 0);
 
-    for (Point2f & point : targetPoints) {
-        total += (Point) point;
+    for (Point2f &point : targetPoints)
+    {
+        total += (Point)point;
     }
 
     return total / 4;
 }
 
-
 /**
  * @return number of milliseconds since 1970 / 1000
  */
-double BigbufDetector::timeSinceEpoch() {
+double BigbufDetector::timeSinceEpoch()
+{
     return double(std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()).count()) / 1000;
+                      std::chrono::system_clock::now().time_since_epoch())
+                      .count()) /
+           1000;
 }
